@@ -14,16 +14,6 @@ repositories {
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.21")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.8.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
-    testImplementation("org.junit.platform:junit-platform-suite:1.8.1")
-    testImplementation("io.cucumber:cucumber-java:6.11.0")
-    testImplementation("io.cucumber:cucumber-junit-platform-engine:6.11.0")
-}
-
-val cucumberRuntime: Configuration by configurations.creating {
-    extendsFrom(configurations["testImplementation"])
 }
 
 allure {
@@ -35,24 +25,6 @@ allure {
         autoconfigureListeners.set(true)
         aspectjWeaver.set(true)
     }
-}
-
-task("cucumberCli") {
-    dependsOn("testClasses")
-    doLast {
-        javaexec {
-            mainClass.set("io.cucumber.core.cli.Main")
-            classpath = cucumberRuntime + sourceSets.main.get().output + sourceSets.test.get().output
-            // Change glue for your project package where the step definitions are.
-            // And where the feature files are.
-            args = listOf("--plugin", "pretty", "--glue", "com.lohika", "src/test/resources")
-        }
-    }
-}
-
-tasks.register<Test>("cucumber") {
-    useJUnitPlatform()
-    System.setProperty("cucumber.junit-platform.naming-strategy", "long")
 }
 
 tasks.register<Test>("junit") {
